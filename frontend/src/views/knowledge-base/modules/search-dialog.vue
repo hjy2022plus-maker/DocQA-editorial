@@ -120,7 +120,7 @@ watch(visible, () => {
           <div class="relative">
             <NHighlight
               v-if="highlight(item.textContent)"
-              highlight-class="bg-[rgb(var(--primary-400-color))] color-white px-2 mx-1 rd-sm"
+              highlight-class="bg-[var(--color-mauve)] color-white px-2 mx-1"
               :text="item.textContent"
               :patterns="patterns"
             />

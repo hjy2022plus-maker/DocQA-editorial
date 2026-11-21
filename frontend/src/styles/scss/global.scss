@@ -1,12 +1,12 @@
-@forward "scrollbar";
+@forward 'scrollbar';
 
-// Shared surfaces and readable text for both application themes.
+// Editorial surfaces: paper canvas, ink text, hairlines for hierarchy.
 :root {
   --app-surface: rgb(var(--container-bg-color));
   --app-text: rgb(var(--base-text-color));
-  --app-muted: rgb(var(--base-text-color) / 0.68);
-  --app-subtle: rgb(var(--base-text-color) / 0.055);
-  --app-border: rgb(var(--base-text-color) / 0.1);
+  --app-muted: var(--color-graphite);
+  --app-subtle: rgb(var(--base-text-color) / 0.04);
+  --app-border: var(--ed-hairline);
 }
 
 .text-muted {
@@ -21,36 +21,41 @@
 
 .workspace-page {
   min-width: 0;
-  gap: 24px;
+  gap: 32px;
 }
 
+// Hairline card: a top rule instead of a floating panel
 .page-section.n-card {
   border: 0;
-  border-radius: 12px;
+  border-top: 1px solid var(--ed-hairline);
+  border-radius: 0;
   box-shadow: none;
-  background: var(--app-surface);
+  background: transparent;
 
   > .n-card-header {
-    padding: 24px 28px 20px;
+    padding: 24px 0 20px;
     gap: 16px;
     flex-wrap: wrap;
 
     .n-card-header__main {
-      font-size: 18px;
-      font-weight: 600;
+      font-family: var(--ed-font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
     }
   }
 
   > .n-card__content {
-    padding: 0 28px 28px;
+    padding: 0 0 24px;
   }
   > .n-card__footer {
-    padding: 24px 28px 28px;
+    padding: 24px 0;
+    border-top: 1px solid var(--ed-hairline);
   }
 }
 
 .workspace-page .n-data-table {
-  --n-border-radius: 8px;
+  --n-border-radius: 0;
 
   .n-data-table-th {
     padding: 12px 16px;
@@ -76,6 +81,53 @@
   max-width: calc(100vw - 32px);
 }
 
+// ------------------------------------------------------------- editorial chrome
+
+.editorial-header {
+  border-bottom: 1px solid var(--ed-hairline);
+}
+
+.editorial-sider {
+  border: 1px solid var(--ed-hairline);
+  background: var(--color-paper);
+}
+
+.editorial-sider .n-menu-item-content {
+  border-radius: 0;
+}
+
+.editorial-sider .n-menu-item-content__icon {
+  font-size: 18px;
+}
+
+.editorial-sider .n-menu-item-content-header {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.editorial-sider .n-menu-item-content--selected {
+  position: relative;
+}
+
+.editorial-sider .n-menu-item-content--selected::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--color-mauve);
+}
+
+.editorial-logo {
+  font-family: var(--ed-font-serif);
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+}
+
 @media (max-width: 640px) {
   .page-section.n-card > .n-card-header > .n-card-header__main {
     flex-basis: 100%;
@@ -85,17 +137,17 @@
   }
 
   .workspace-page {
-    gap: 16px;
+    gap: 24px;
   }
   .page-section.n-card {
     > .n-card-header {
-      padding: 20px 20px 16px;
+      padding: 20px 0 16px;
     }
     > .n-card__content {
-      padding: 0 20px 20px;
+      padding: 0 0 20px;
     }
     > .n-card__footer {
-      padding: 20px;
+      padding: 20px 0;
     }
   }
   .workspace-page .page-filters.n-form {

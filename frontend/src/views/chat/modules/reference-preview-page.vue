@@ -179,11 +179,13 @@ watch(
 
 <style scoped lang="scss">
 .preview-page-state {
-  @apply flex min-h-220px flex-col items-center justify-center gap-4 rounded-12px bg-white text-stone-500;
+  @apply flex min-h-220px flex-col items-center justify-center gap-4 text-stone-500;
+  border: 1px solid var(--ed-hairline);
 }
 
 .preview-page-empty {
-  @apply rounded-12px bg-white py-10;
+  @apply py-10;
+  border-top: 1px solid var(--ed-hairline);
 }
 
 .preview-page-shell {
@@ -191,6 +193,8 @@ watch(
 }
 
 .preview-page-tip {
-  @apply rounded-12px border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700;
+  @apply px-4 py-3 text-sm;
+  border: 1px solid rgba(138, 115, 85, 0.4);
+  color: #8a7355;
 }
 </style>

@@ -574,7 +574,7 @@ function closePreview() {
     }
 
     .state-orb {
-      @apply flex h-16 w-16 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-700;
+      @apply flex h-16 w-16 items-center justify-center border border-stone-200 bg-stone-50 text-stone-700;
     }
 
     .state-orb--error {
@@ -676,11 +676,11 @@ function closePreview() {
     }
 
     .download-placeholder {
-      @apply flex h-full min-h-[320px] flex-col items-center justify-center gap-5 rounded-12px bg-stone-50 px-8 text-center text-stone-500;
+      @apply flex h-full min-h-[320px] flex-col items-center justify-center gap-5 border border-stone-200 px-8 text-center text-stone-500;
     }
 
     .placeholder-icon {
-      @apply flex h-16 w-16 items-center justify-center rounded-full bg-stone-100 text-stone-700;
+      @apply flex h-16 w-16 items-center justify-center border border-stone-200 bg-stone-50 text-stone-700;
     }
 
     .placeholder-actions {

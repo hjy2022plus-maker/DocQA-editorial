@@ -55,14 +55,14 @@ function formatDate(dateStr?: string) {
 
 <template>
   <div
-    class="relative h-full flex flex-col shrink-0 overflow-hidden border-r border-#eef0f4 bg-#f8f9fb transition-[width] duration-200 ease-out dark:border-#ffffff0f dark:bg-#ffffff05"
+    class="relative h-full flex flex-col shrink-0 overflow-hidden border-r border-[color:var(--ed-hairline)] transition-[width] duration-200 ease-out"
     :class="collapsed ? 'w-0 min-w-0 border-r-0' : 'w-[260px] min-w-[260px]'"
   >
     <div class="w-[260px] flex flex-col flex-1 overflow-hidden" :class="{ 'pointer-events-none invisible': collapsed }">
-      <div class="flex items-center justify-between px-4 pb-2 pt-4">
-        <span class="text-15px font-600">对话列表</span>
+      <div class="flex items-center justify-between px-4 pb-3 pt-4">
+        <span class="sidebar-title">对话列表</span>
         <div class="flex items-center gap-1">
-          <NButton type="primary" size="small" secondary @click="handleNewChat">
+          <NButton type="primary" size="small" @click="handleNewChat">
             <template #icon>
               <icon-material-symbols:add-rounded />
             </template>
@@ -77,29 +77,23 @@ function formatDate(dateStr?: string) {
       </div>
 
       <!-- Tabs -->
-      <div class="mx-4 mb-2 flex rounded-lg bg-[var(--app-subtle)] p-0.5 dark:bg-[#FFFFFF0A]">
-        <div
-          class="flex-1 cursor-pointer rounded-md px-3 py-1.5 text-center text-12px font-500 transition-all"
-          :class="
-            activeTab === 'active'
-              ? 'bg-white text-[rgb(var(--primary-color))] shadow-sm dark:bg-[#FFFFFF14] dark:text-primary'
-              : 'text-#666 dark:text-#999'
-          "
+      <div class="sidebar-tabs mx-4 mb-2 flex">
+        <button
+          type="button"
+          class="sidebar-tab"
+          :class="{ 'sidebar-tab--active': activeTab === 'active' }"
           @click="setActiveTab('active')"
         >
           活跃
-        </div>
-        <div
-          class="flex-1 cursor-pointer rounded-md px-3 py-1.5 text-center text-12px font-500 transition-all"
-          :class="
-            activeTab === 'archived'
-              ? 'bg-white text-[rgb(var(--primary-color))] shadow-sm dark:bg-[#FFFFFF14] dark:text-primary'
-              : 'text-#666 dark:text-#999'
-          "
+        </button>
+        <button
+          type="button"
+          class="sidebar-tab"
+          :class="{ 'sidebar-tab--active': activeTab === 'archived' }"
           @click="setActiveTab('archived')"
         >
           已归档
-        </div>
+        </button>
       </div>
 
       <!-- List -->
@@ -110,27 +104,27 @@ function formatDate(dateStr?: string) {
               v-if="filteredSessions.length === 0 && !sessionsLoading"
               class="flex flex-col items-center justify-center gap-3 py-16"
             >
-              <icon-material-symbols:chat-outline-rounded class="text-36px color-#ccc dark:color-#444" />
-              <span class="text-13px color-#aaa">{{ activeTab === 'active' ? '暂无对话记录' : '暂无归档对话' }}</span>
+              <icon-material-symbols:chat-outline-rounded class="text-36px color-[var(--color-graphite)]" />
+              <span class="text-13px color-[var(--color-graphite)]">
+                {{ activeTab === 'active' ? '暂无对话记录' : '暂无归档对话' }}
+              </span>
             </div>
 
             <div
               v-for="session in filteredSessions"
               :key="session.conversationId"
-              class="group mx-1 mb-0.5 flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 transition-all"
+              class="session-item group mx-1 mb-0.5 flex cursor-pointer items-center gap-2.5 px-3 py-2.5 transition-colors"
               :class="
-                session.conversationId === conversationId
-                  ? 'bg-[rgb(var(--primary-color)/0.08)]'
-                  : 'hover:bg-[var(--app-subtle)] dark:hover:bg-[#FFFFFF08]'
+                session.conversationId === conversationId ? 'session-item--active' : 'hover:bg-[var(--app-subtle)]'
               "
               @click="handleSelect(session.conversationId)"
             >
               <div
-                class="h-7 w-7 flex shrink-0 items-center justify-center rounded-lg text-15px"
+                class="h-7 w-7 flex shrink-0 items-center justify-center text-15px"
                 :class="
                   session.conversationId === conversationId
-                    ? 'bg-[rgb(var(--primary-color)/0.12)] text-[rgb(var(--primary-color))]'
-                    : 'bg-[var(--app-subtle)] text-#999 dark:bg-[#FFFFFF0A]'
+                    ? 'text-[var(--color-mauve)]'
+                    : 'text-[var(--color-graphite)]'
                 "
               >
                 <icon-material-symbols:chat-outline-rounded />
@@ -138,11 +132,11 @@ function formatDate(dateStr?: string) {
               <div class="min-w-0 flex-1">
                 <div
                   class="truncate text-13px font-500"
-                  :class="session.conversationId === conversationId ? 'text-[rgb(var(--primary-color))]' : ''"
+                  :class="session.conversationId === conversationId ? 'text-[var(--color-ink)]' : ''"
                 >
                   {{ session.title }}
                 </div>
-                <div class="text-11px color-#aaa">{{ formatDate(session.updatedAt) }}</div>
+                <div class="text-11px color-[var(--color-graphite)]">{{ formatDate(session.updatedAt) }}</div>
               </div>
 
               <!-- Action button -->
@@ -182,6 +176,54 @@ function formatDate(dateStr?: string) {
 </template>
 
 <style scoped>
+.sidebar-title {
+  font-family: var(--ed-font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.sidebar-tabs {
+  border-bottom: 1px solid var(--ed-hairline);
+}
+
+.sidebar-tab {
+  flex: 1;
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 8px 12px 10px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--ed-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-graphite);
+  transition:
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
+.sidebar-tab:hover {
+  color: var(--color-ink);
+}
+
+.sidebar-tab--active {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-ink);
+}
+
+.session-item {
+  position: relative;
+  border-left: 2px solid transparent;
+}
+
+.session-item--active {
+  border-left-color: var(--color-mauve);
+}
+
 .session-list-enter-active,
 .session-list-leave-active {
   transition: all 0.2s ease;

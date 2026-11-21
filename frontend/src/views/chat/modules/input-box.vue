@@ -434,13 +434,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative shrink-0 bg-white px-4 pb-3 pt-2 dark:bg-[#1c1c1c]">
-    <div
-      class="pointer-events-none absolute inset-x-0 h-6 from-white/95 to-transparent bg-gradient-to-t -top-6 dark:from-[#1c1c1c]/95"
-    />
-    <div
-      class="chat-input-shell mx-auto max-w-[960px] w-full flex items-end gap-2 rounded-2xl bg-white px-3.5 py-2.5 dark:bg-[#1f1f1f]"
-    >
+  <div class="relative shrink-0 px-4 pb-3 pt-2">
+    <div class="chat-input-shell mx-auto max-w-[960px] w-full flex items-end gap-2 px-3.5 py-2.5">
       <textarea
         ref="inputRef"
         v-model.trim="input.message"
@@ -452,7 +447,6 @@ onUnmounted(() => {
         :disabled="sendDisabled"
         class="shrink-0 self-end"
         size="small"
-        circle
         :type="isSending ? 'warning' : 'primary'"
         @click="handleSend"
       >
@@ -489,25 +483,18 @@ textarea::placeholder {
   color: var(--app-muted);
 }
 .chat-input-shell {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 6px 18px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--ed-hairline);
+  border-radius: 0;
   transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background-color 0.18s ease;
+    border-color 200ms ease,
+    background-color 200ms ease;
 }
 
 .chat-input-shell:focus-within {
-  border-color: rgb(var(--primary-color) / 0.38);
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 8px 24px rgba(15, 23, 42, 0.06);
+  border-color: var(--color-ink);
 }
 
 .dark .chat-input-shell {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: none;
+  border-color: var(--ed-hairline);
 }
 </style>

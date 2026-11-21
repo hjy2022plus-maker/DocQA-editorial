@@ -68,6 +68,32 @@ echarts.use([
   CanvasRenderer
 ]);
 
+/** Editorial chart palette: ink, graphite and a single mauve accent. */
+echarts.registerTheme('editorial', {
+  color: ['#1c1c1c', '#816d70', '#6b7280', '#a8a29e', '#4b5563', '#b9b2a8'],
+  backgroundColor: 'transparent',
+  textStyle: { color: '#1c1c1c' },
+  title: { textStyle: { color: '#1c1c1c', fontWeight: 400 } },
+  legend: { textStyle: { color: '#6b7280' } },
+  tooltip: {
+    backgroundColor: '#f9f8f6',
+    borderColor: 'rgba(28, 28, 28, 0.1)',
+    borderWidth: 1,
+    textStyle: { color: '#1c1c1c' }
+  },
+  categoryAxis: {
+    axisLine: { lineStyle: { color: 'rgba(28, 28, 28, 0.2)' } },
+    axisTick: { lineStyle: { color: 'rgba(28, 28, 28, 0.2)' } },
+    axisLabel: { color: '#6b7280' },
+    splitLine: { show: false }
+  },
+  valueAxis: {
+    axisLine: { show: false },
+    axisLabel: { color: '#6b7280' },
+    splitLine: { lineStyle: { color: 'rgba(28, 28, 28, 0.08)' } }
+  }
+});
+
 interface ChartHooks {
   onRender?: (chart: echarts.ECharts) => void | Promise<void>;
   onUpdated?: (chart: echarts.ECharts) => void | Promise<void>;
@@ -153,7 +179,7 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
   /** render chart */
   async function render() {
     if (!isRendered()) {
-      const chartTheme = darkMode.value ? 'dark' : 'light';
+      const chartTheme = darkMode.value ? 'dark' : 'editorial';
 
       await nextTick();
 

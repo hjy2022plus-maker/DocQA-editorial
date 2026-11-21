@@ -646,7 +646,8 @@ async function onBeforeUpload(
 
 .document-preview-modal-shell {
   overflow: hidden;
-  border-radius: 32px;
-  box-shadow: 0 36px 120px rgba(15, 23, 42, 0.28);
+  border: 1px solid var(--ed-hairline);
+  border-radius: 0;
+  box-shadow: none;
 }
 </style>

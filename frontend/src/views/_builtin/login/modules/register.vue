@@ -182,7 +182,7 @@ watch(
         {{ $t('page.login.register.inviteCodeTip') }}
       </div>
       <NSpace vertical :size="18" class="w-full">
-        <NButton type="primary" size="large" round block :loading="loading" @click="handleSubmit">
+        <NButton type="primary" size="large" class="ed-cta w-full" :loading="loading" @click="handleSubmit">
           {{ $t('page.login.common.register') }}
         </NButton>
         <NButton block @click="toggleLoginModule('pwd-login')">
@@ -203,8 +203,8 @@ watch(
 <style scoped>
 .register-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+  gap: 48px;
   align-items: stretch;
 }
 
@@ -222,73 +222,37 @@ watch(
   display: flex;
   min-width: 0;
   flex-direction: column;
-  border: 1px solid rgb(var(--primary-color) / 0.16);
-  border-radius: 24px;
-  padding: 20px;
-  background:
-    radial-gradient(circle at top right, rgb(var(--primary-color) / 0.16), transparent 36%),
-    linear-gradient(
-      145deg,
-      rgb(var(--primary-50-color) / 0.94),
-      rgb(var(--primary-100-color) / 0.82) 55%,
-      rgb(var(--container-bg-color)) 100%
-    );
-  box-shadow: 0 18px 40px rgb(var(--primary-color) / 0.08);
+  border-top: 1px solid var(--ed-hairline);
+  padding-top: 24px;
 }
 
 .invite-side-kicker {
   font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: rgb(var(--primary-700-color));
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-graphite);
 }
 
 .invite-side-title {
-  margin-top: 8px;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.45;
-  color: rgb(var(--primary-700-color));
+  margin-top: 16px;
+  font-family: var(--ed-font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
 }
 
 .invite-side-desc {
-  margin-top: 10px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: rgb(var(--base-text-color) / 0.72);
-}
-
-.invite-emphasis,
-.invite-keyword-mark {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgb(var(--primary-color) / 0.18);
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: rgb(var(--primary-700-color));
-  background: rgb(var(--primary-color) / 0.08);
-  box-shadow: inset 0 1px 0 rgb(var(--container-bg-color) / 0.6);
-}
-
-.invite-keyword-mark {
-  background: linear-gradient(135deg, rgb(var(--primary-color) / 0.16), rgb(var(--primary-200-color) / 0.18));
-}
-
-.invite-step-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.invite-inline-copy {
-  font-size: 12px;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-graphite);
 }
 
 .invite-side-steps {
-  margin-top: 16px;
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -296,10 +260,10 @@ watch(
 
 .invite-step-row {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  gap: 12px;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: rgb(var(--base-text-color) / 0.78);
 }
 
@@ -308,67 +272,21 @@ watch(
   padding-top: 18px;
 }
 
-.invite-qr-shell {
-  width: min(180px, 52%);
-  overflow: hidden;
-  border: 1px solid rgb(var(--primary-color) / 0.14);
-  border-radius: 20px;
-  background: rgb(var(--container-bg-color) / 0.84);
-  backdrop-filter: blur(8px);
-}
-
-.invite-qr-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
-.invite-qr-placeholder {
-  display: flex;
-  aspect-ratio: 1 / 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-}
-
-.invite-qr-icon {
-  font-size: 42px;
-  color: rgb(var(--primary-600-color));
-}
-
-.invite-qr-title {
-  margin-top: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  color: rgb(var(--primary-700-color));
-}
-
-.invite-qr-desc {
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.7;
-  color: rgb(var(--base-text-color) / 0.66);
-}
-
 .invite-channel-step {
   display: inline-flex;
-  width: 20px;
-  height: 20px;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 12px;
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, rgb(var(--primary-color)), rgb(var(--primary-700-color)));
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-mauve);
 }
 
 @media (max-width: 900px) {
   .register-layout {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
 }
 </style>

@@ -1504,23 +1504,19 @@ async function cleanupPdfState() {
 }
 
 .pdf-canvas {
-  @apply relative z-0 block rounded-2xl;
+  @apply relative z-0 block;
 }
 
 .pdf-highlight-overlay {
-  @apply pointer-events-none absolute z-[5] overflow-hidden rounded-2xl;
+  @apply pointer-events-none absolute z-[5] overflow-hidden;
   inset: var(--pdf-page-inset);
 }
 
 .pdf-highlight-rect {
   @apply absolute;
-  border-radius: 6px;
-  background: linear-gradient(
-    180deg,
-    rgba(64, 169, 255, 0.12) 0%,
-    rgba(24, 144, 255, 0.28) 100%
-  );
-  box-shadow: 0 0 0 1px rgba(24, 144, 255, 0.12);
+  border-radius: 0;
+  background: rgba(129, 109, 112, 0.16);
+  box-shadow: 0 0 0 1px rgba(129, 109, 112, 0.24);
   opacity: 0.92;
 }
 

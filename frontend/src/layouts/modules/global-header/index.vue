@@ -29,7 +29,7 @@ const isDev = import.meta.env.DEV;
 </script>
 
 <template>
-  <DarkModeContainer class="h-full flex-y-center justify-between gap-2 bg-transparent px-4">
+  <DarkModeContainer class="editorial-header h-full flex-y-center justify-between gap-2 px-6">
     <div id="header-extra" class="h-full min-w-0 flex-col flex-1 justify-center"></div>
     <!-- <GlobalLogo v-if="showLogo" class="h-full" :style="{ width: themeStore.sider.width + 'px' }" /> -->
     <MenuToggler

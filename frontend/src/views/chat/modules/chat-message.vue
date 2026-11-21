@@ -378,14 +378,14 @@ async function handleSourceFileClick(fileInfo: {
         <SvgIcon icon="ph:user-circle" class="text-icon-large color-white" />
       </NAvatar>
       <div class="flex-col gap-1">
-        <NText class="text-4 font-bold">{{ msg.username || authStore.userInfo.username }}</NText>
-        <NText class="text-muted text-3">{{ formatDate(msg.timestamp) }}</NText>
+        <NText class="message-author">{{ msg.username || authStore.userInfo.username }}</NText>
+        <NText class="message-time">{{ formatDate(msg.timestamp) }}</NText>
       </div>
     </div>
     <div v-else class="flex items-center gap-4">
       <div class="flex-col gap-1">
-        <NText class="text-4 font-bold">文档问答</NText>
-        <NText class="text-muted text-3">{{ formatDate(msg.timestamp) }}</NText>
+        <NText class="message-author">文档问答</NText>
+        <NText class="message-time">{{ formatDate(msg.timestamp) }}</NText>
       </div>
     </div>
     <div v-if="msg.role === 'assistant' && toolEvents.length > 0" class="ml-12 mt-3 flex flex-col gap-2">
@@ -405,7 +405,7 @@ async function handleSourceFileClick(fileInfo: {
     <NText v-if="msg.status === 'pending' || (msg.status === 'loading' && msg.role === 'assistant' && !msg.content)">
       <icon-eos-icons:three-dots-loading class="ml-12 mt-2 text-8" />
     </NText>
-    <NText v-else-if="msg.status === 'error'" class="ml-12 mt-2 color-#d03050 italic">
+    <NText v-else-if="msg.status === 'error'" class="ml-12 mt-2 color-#8c5a52 italic">
       {{ msg.content || '服务器繁忙，请稍后再试' }}
     </NText>
     <div v-else-if="msg.role === 'assistant'" class="mt-2 pl-12" @click="handleContentClick">
@@ -449,19 +449,35 @@ async function handleSourceFileClick(fileInfo: {
 </template>
 
 <style scoped lang="scss">
+.message-author {
+  font-family: var(--ed-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.message-time {
+  font-family: var(--ed-font-sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-graphite);
+}
+
 :deep(.source-file-link) {
-  color: #1890ff;
+  color: var(--color-ink);
   cursor: pointer;
   text-decoration: underline;
-  transition: color 0.2s;
+  text-underline-offset: 2px;
+  transition: color 200ms;
 
   &:hover {
-    color: #40a9ff;
-    text-decoration: none;
+    color: var(--color-mauve);
   }
 
   &:active {
-    color: #096dd9;
+    color: var(--color-mauve);
   }
 }
 
@@ -473,12 +489,12 @@ async function handleSourceFileClick(fileInfo: {
 
 :deep(.citation-suspicious-badge) {
   margin-left: 4px;
-  border: 1px solid #faad14;
-  border-radius: 4px;
+  border: 1px solid var(--ed-hairline-strong);
+  border-radius: 0;
   padding: 0 4px;
   font-size: 11px;
   line-height: 16px;
-  color: #d48806;
+  color: var(--color-graphite);
 }
 
 .tool-event {
@@ -488,8 +504,8 @@ async function handleSourceFileClick(fileInfo: {
   align-items: center;
   gap: 8px;
   border: 1px solid var(--app-border);
-  border-radius: 6px;
-  background: var(--app-subtle);
+  border-radius: 0;
+  background: transparent;
   padding: 5px 9px;
   font-size: 12px;
   line-height: 18px;
@@ -506,12 +522,12 @@ async function handleSourceFileClick(fileInfo: {
 }
 
 .tool-event--success {
-  border-color: rgb(24 160 88 / 0.25);
-  color: #18a058;
+  border-color: rgba(79, 99, 80, 0.35);
+  color: #4f6350;
 }
 
 .tool-event--failed {
-  border-color: rgb(208 48 80 / 0.25);
-  color: #d03050;
+  border-color: rgba(140, 90, 82, 0.35);
+  color: #8c5a52;
 }
 </style>

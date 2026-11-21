@@ -59,7 +59,6 @@ async function handleSubmit() {
     localStg.remove('rememberedLogin');
   }
 }
-
 </script>
 
 <template>
@@ -89,14 +88,20 @@ async function handleSubmit() {
       </NCheckbox>
     </div>
     <div class="flex-col gap-6">
-      <NButton type="primary" size="large" round block :loading="authStore.loginLoading" @click="handleSubmit">
+      <NButton
+        type="primary"
+        size="large"
+        class="ed-cta w-full"
+        :loading="authStore.loginLoading"
+        @click="handleSubmit"
+      >
         {{ $t('page.login.common.login') }}
       </NButton>
       <NButton block @click="toggleLoginModule('register')">
         {{ $t(loginModuleRecord.register) }}
       </NButton>
 
-      <span class="text-center">
+      <span class="text-muted text-center text-12px">
         登录即代表已阅读并同意我们的
         <NButton text type="primary">用户协议</NButton>
         和

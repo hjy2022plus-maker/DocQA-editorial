@@ -129,7 +129,7 @@ function handleClickMask() {
             commonClass,
             headerClass,
             headerLeftGapClass,
-            { 'absolute top-4 right-4 w-full': fixedHeaderAndTab }
+            { 'absolute top-0 right-0 w-full': fixedHeaderAndTab }
           ]"
         >
           <slot name="header"></slot>
@@ -167,7 +167,7 @@ function handleClickMask() {
       <template v-if="showSider">
         <aside
           v-show="!fullContent"
-          class="absolute left-4 top-4 h-[calc(100vh-32px)] of-hidden rd-4 shadow-2xl"
+          class="absolute left-0 top-0 h-full of-hidden"
           :class="[
             commonClass,
             siderClass,
@@ -182,7 +182,7 @@ function handleClickMask() {
       <!-- Mobile Sider -->
       <template v-if="showMobileSider">
         <aside
-          class="absolute left-0 top-0 h-full w-0 bg-white"
+          class="absolute left-0 top-0 h-full w-0 bg-[var(--color-paper)]"
           :class="[
             commonClass,
             mobileSiderClass,

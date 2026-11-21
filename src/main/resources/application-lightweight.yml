@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: lightweight
+  data:
+    redis:
+      repositories:
+        enabled: false
+  kafka:
+    enabled: false
+
+app:
+  storage:
+    root: ${APP_STORAGE_ROOT:./data/documents}
+    max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:20971520}
+    allowed-extensions: pdf,doc,docx,md,txt
+
+lightweight:
+  upload:
+    resumable: false
+    md5-deduplication: true
+  answer:
+    transport: sse
+    reconnect: false
+    snapshot: false

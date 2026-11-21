@@ -24,7 +24,7 @@ watch(
     <ReferencePreviewPage />
   </div>
   <div v-else class="h-full bg-layout">
-    <div class="chat-surface relative h-full flex overflow-hidden rounded-xl bg-container">
+    <div class="chat-surface relative h-full flex overflow-hidden bg-container">
       <button
         v-if="appStore.isMobile && !sidebarCollapsed"
         class="sidebar-backdrop"
@@ -38,7 +38,7 @@ watch(
       <div class="relative min-w-0 flex flex-col flex-1">
         <button
           v-show="sidebarCollapsed"
-          class="conversation-toggle absolute left-3 top-3 z-20 h-9 w-9 inline-flex items-center justify-center rounded-lg"
+          class="conversation-toggle absolute left-3 top-3 z-20 h-9 w-9 inline-flex items-center justify-center"
           aria-label="展开对话列表"
           @click="sidebarCollapsed = false"
         >
@@ -56,10 +56,12 @@ watch(
   background: var(--app-surface);
   color: var(--app-muted);
   border: 1px solid var(--app-border);
+  border-radius: 0;
   cursor: pointer;
 }
 .conversation-toggle:hover {
-  color: rgb(var(--primary-color));
+  color: var(--color-ink);
+  border-color: var(--ed-hairline-strong);
 }
 .mobile-conversations {
   position: absolute;

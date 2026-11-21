@@ -93,10 +93,10 @@ const showEmpty = computed(() => !loading.value && list.value.length === 0);
 
       <!-- Empty state -->
       <div v-if="showEmpty" class="flex flex-col flex-1 items-center justify-center gap-4">
-        <div class="h-20 w-20 flex items-center justify-center rounded-2xl bg-[rgb(var(--primary-color)/0.08)]">
-          <icon-material-symbols:chat-outline-rounded class="text-36px text-[rgb(var(--primary-color)/0.5)]" />
+        <div class="empty-mark h-20 w-20 flex items-center justify-center">
+          <icon-material-symbols:chat-outline-rounded class="text-36px text-[var(--color-graphite)]" />
         </div>
-        <div class="text-body text-15px font-500">
+        <div class="empty-title text-[var(--color-ink)]">
           {{ conversationId ? '开始新对话' : '选择或创建一个对话' }}
         </div>
         <div class="text-muted text-12px">在左侧选择一个对话，或点击「新对话」开始</div>
@@ -123,6 +123,18 @@ const showEmpty = computed(() => !loading.value && list.value.length === 0);
 </template>
 
 <style scoped lang="scss">
+.empty-mark {
+  border: 1px solid var(--ed-hairline);
+}
+
+.empty-title {
+  font-family: var(--ed-font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
 @media (max-width: 640px) {
   .chat-date-filter {
     padding-left: 56px;

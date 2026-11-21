@@ -1,0 +1,20 @@
+# 仅用于本地预览本 worktree 的前端构建产物。
+# 复用主项目的 paismart_default 网络，因此 /api 与 /proxy-ws 仍代理到已有的 paismart-backend。
+# 启动：docker compose -p paismart-editorial -f docker-compose.preview.yml up -d
+services:
+  frontend:
+    image: nginx:1.15-alpine
+    container_name: paismart-frontend-editorial
+    restart: unless-stopped
+    ports:
+      - '9530:80'
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - paismart
+
+networks:
+  paismart:
+    external: true
+    name: paismart_default
