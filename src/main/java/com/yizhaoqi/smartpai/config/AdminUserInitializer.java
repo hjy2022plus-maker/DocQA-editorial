@@ -19,7 +19,7 @@ import java.util.Set;
  * 管理员账号初始化器
  * 在应用启动时自动创建管理员账号（如果不存在）
  */
-@Component
+// @Component // 轻量模式仅保留普通 JWT 登录，不执行企业管理员引导
 @Order(1) // 设置优先级，确保在其他初始化器之前运行
 public class AdminUserInitializer implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(AdminUserInitializer.class);

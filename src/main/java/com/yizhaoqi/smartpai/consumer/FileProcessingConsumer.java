@@ -25,7 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-@Service
+// @Service // Kafka 文件处理消费者已停用，轻量模式由 LightweightDocumentService 异步处理
 @Slf4j
 public class FileProcessingConsumer {
 

@@ -15,7 +15,16 @@ public class LightweightAsyncConfig {
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(32);
         executor.setThreadNamePrefix("document-parse-");
-        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "answerExecutor")
+    public ThreadPoolTaskExecutor answerExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(16);
+        executor.setThreadNamePrefix("docqa-answer-");
         return executor;
     }
 }

@@ -463,13 +463,22 @@ async function downloadFile() {
       if (requestError) {
         window.$message?.error('下载失败：' + (requestError.message || '未知错误'));
       } else if (data) {
-        // 使用预签名URL下载文件
+        // 原文件保持 JWT 鉴权，不把令牌附在 URL 上。
+        const authorization = useAuthStore().token;
+        const target = new URL(resolveFileAccessUrl(data.downloadUrl), window.location.href);
+        if (target.origin !== window.location.origin) throw new Error('原文件必须由当前站点提供');
+        const response = await fetch(target, {
+          headers: { Authorization: 'Bearer ' + authorization }, redirect: 'error'
+        });
+        if (!response.ok) throw new Error('无法读取原文件');
+        const url = URL.createObjectURL(await response.blob());
         const link = document.createElement('a');
-        link.href = data.downloadUrl;
+        link.href = url;
         link.download = data.fileName;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
         window.$message?.success('开始下载文件');
       }
     } else {
@@ -505,16 +514,28 @@ async function downloadFile() {
   }
 }
 
-function openPreviewInNewTab() {
+async function openPreviewInNewTab() {
   const targetUrl = resolvedSourceUrl.value || resolvedPreviewUrl.value;
   if (!targetUrl) return;
 
-  if (previewType.value === 'pdf' && displayPage.value) {
-    window.open(`${targetUrl}#page=${displayPage.value}`, '_blank', 'noopener,noreferrer');
-    return;
+  const tab = window.open('about:blank', '_blank');
+  if (!tab) return;
+  tab.opener = null;
+  try {
+    const target = new URL(targetUrl, window.location.href);
+    if (target.origin !== window.location.origin) throw new Error();
+    const response = await fetch(target, { headers: { Authorization: 'Bearer ' + useAuthStore().token }, redirect: 'error' });
+    if (!response.ok) throw new Error();
+    const blob = URL.createObjectURL(await response.blob());
+    if (tab.closed) URL.revokeObjectURL(blob);
+    else {
+      tab.location.href = blob + (displayPage.value ? '#page=' + displayPage.value : '');
+      window.setTimeout(() => URL.revokeObjectURL(blob), 60_000);
+    }
+  } catch {
+    tab.close();
+    window.$message?.error('无法打开原文件');
   }
-
-  window.open(targetUrl, '_blank', 'noopener,noreferrer');
 }
 
 // 关闭预览

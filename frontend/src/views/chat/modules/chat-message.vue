@@ -310,7 +310,7 @@ async function handleSourceFileClick(fileInfo: {
 
     if (
       referenceSessionId &&
-      (!persistedDetail?.retrievalQuery || !persistedDetail?.matchedChunkText || !persistedDetail?.evidenceSnippet)
+      !persistedDetail?.fileMd5
     ) {
       try {
         const { error: detailError, data: detailData } = await request<Api.Document.ReferenceDetailResponse>({

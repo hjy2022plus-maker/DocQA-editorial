@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
-@Configuration
-@EnableWebSocket
+// @Configuration // 轻量模式使用 SSE
+// @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired

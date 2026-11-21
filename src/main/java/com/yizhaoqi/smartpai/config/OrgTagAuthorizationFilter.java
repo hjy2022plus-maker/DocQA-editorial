@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  *    - 这类API的控制器方法通过@RequestAttribute("userId")获取用户ID
  *    - 由本过滤器负责从JWT令牌中提取用户ID并设置为请求属性
  */
-@Component
+// @Component // 轻量模式仅按 userId + isPublic 授权
 public class OrgTagAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(OrgTagAuthorizationFilter.class);

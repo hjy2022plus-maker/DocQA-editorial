@@ -1,3 +1,4 @@
+<!-- 历史企业版计划；不属于当前运行指南。
 # 派聪明面试题对齐升级计划
 
 来源：2026-10-06 面试文章《派聪明 RAG + PaiCLI 面试 9 问》（toBeBetterJavaer `docs/src/sidebar/itwanger/ai/paismart-paicli-mianshi.md`）。文章按面试官期望的方案作答，下面是当前代码（HEAD `c168e269`）和文章答案之间的差距，做完一项勾一项。路径相对 `src/main/java/com/yizhaoqi/smartpai/`。
@@ -166,4 +167,4 @@
 - [ ] **检索模式异常时报告直接告警，评测检索不占管理员配额**（文章 03 节、08 节第 05 题）
   - 现状：报告只统计 `retrievalModeCounts`（`service/eval/EvalReportAggregator.java:59`），出现 `TEXT_ONLY` 等降级模式不会告警；评测检索的问题向量化用发起评测的管理员 id 作为请求方（`service/HybridSearchService.java:104`、`:130`），计入该用户的 Embedding 查询限流，额度用完后检索静默降级为纯文本
   - 目标：报告汇总里非 `HYBRID` 模式占比超过阈值时给出 `warning`；评测检索的向量化改用 `system-eval` 请求方并豁免按用户的次数限制（全网 token 预算仍生效），权限过滤仍按发起评测的管理员
-
+-->

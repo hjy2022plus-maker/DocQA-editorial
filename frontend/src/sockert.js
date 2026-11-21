@@ -1,3 +1,4 @@
+/* LEGACY_WS_DISABLED: SSE 已替代 WebSocket，本地模拟服务器仅保留历史记录。
 // websocket-server.js
 import { WebSocket, WebSocketServer } from 'ws';
 
@@ -36,3 +37,4 @@ wss.on('connection', ws => {
 });
 
 console.log('WebSocket server is running on ws://localhost:8080');
+*/

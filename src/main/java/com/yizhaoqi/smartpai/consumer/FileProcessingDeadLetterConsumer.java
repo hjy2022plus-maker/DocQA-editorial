@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  * 死信主题消费者：重试耗尽的文件处理任务落库并告警，供排查和人工重放。
  * 按死信记录在主题中的位置去重，重复消费不会重复落库
  */
-@Component
+// @Component // Kafka 死信消费者已停用
 public class FileProcessingDeadLetterConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(FileProcessingDeadLetterConsumer.class);

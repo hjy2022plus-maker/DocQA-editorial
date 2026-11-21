@@ -20,7 +20,7 @@ import java.util.Optional;
  * 所有状态变更都是带条件的 UPDATE：认领要求没有别的消费者持有未超时的心跳；心跳、完成、失败要求认领时间没变。
  * 定时任务把卡住的任务改回待处理时会清空认领时间，旧消费者下一次心跳就会发现并放弃，不会和新消费者同时写数据
  */
-@Service
+// @Service // Kafka 消费租约停用
 public class VectorizationLeaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(VectorizationLeaseService.class);

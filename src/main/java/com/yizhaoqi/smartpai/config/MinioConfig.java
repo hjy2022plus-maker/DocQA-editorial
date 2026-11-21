@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
-@Configuration
+// @Configuration // 轻量模式使用 app.storage 本地磁盘
 public class MinioConfig {
 
     @Value("${minio.endpoint}")

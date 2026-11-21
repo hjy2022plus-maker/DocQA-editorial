@@ -65,7 +65,6 @@ services:
       - path: .env
         required: false
     environment:
-      SPRING_PROFILES_ACTIVE: lightweight
       SERVER_PORT: 8081
       APP_TIMEZONE: Asia/Shanghai
 
@@ -81,21 +80,18 @@ services:
       ELASTICSEARCH_SCHEME: http
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:-paismart}
-      ELASTICSEARCH_INSECURE_TRUST_ALL_CERTIFICATES: "true"
+      ELASTICSEARCH_INSECURE_TRUST_ALL_CERTIFICATES: "false"
 
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
 
       # 首次启动创建管理员；密码来自 .env 的 ADMIN_BOOTSTRAP_PASSWORD
-      ADMIN_BOOTSTRAP_ENABLED: ${DOCKER_ADMIN_BOOTSTRAP_ENABLED:-true}
+      ADMIN_BOOTSTRAP_ENABLED: ${ADMIN_BOOTSTRAP_ENABLED:-false}
       ADMIN_BOOTSTRAP_USERNAME: ${ADMIN_BOOTSTRAP_USERNAME:-admin}
-      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-PaiSmart@2025}
-      ADMIN_BOOTSTRAP_PRIMARY_ORG: ${ADMIN_BOOTSTRAP_PRIMARY_ORG:-default}
-      ADMIN_BOOTSTRAP_ORG_TAGS: ${ADMIN_BOOTSTRAP_ORG_TAGS:-default,admin}
-
-      KNOWLEDGE_BOOTSTRAP_ENABLED: "false"
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+      # 不设置组织或商业功能配置。
 
       # 容器内 localhost 指向容器自身，本机 Ollama 改为 host.docker.internal
-      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL_DOCKER:-http://host.docker.internal:11434/v1}
+      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL_DOCKER:-${DEEPSEEK_API_URL:-}}
       SECURITY_ALLOWED_ORIGINS: ${SECURITY_ALLOWED_ORIGINS:-http://localhost:*,http://127.0.0.1:*}
     extra_hosts:
       - "host.docker.internal:host-gateway"

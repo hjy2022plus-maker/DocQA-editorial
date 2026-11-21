@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.HashMap;
 
-@RestController
+// @RestController // WebSocket 控制接口已停用，问答入口使用 lightweight/qa/stream
 @RequestMapping("/api/v1/chat")
 public class ChatController {
 

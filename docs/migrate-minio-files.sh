@@ -1,4 +1,6 @@
 #!/bin/bash
+# 旧版 MinIO 迁移脚本停用；以下为不执行的历史内容。
+: <<'DOCQA_ARCHIVED_MINIO_SCRIPT'
 # MinIO 文件迁移脚本：将旧文件（文件名路径）迁移到新路径（MD5路径）
 
 # 配置
@@ -79,3 +81,4 @@ echo "成功迁移: $SUCCESS_COUNT 个文件"
 echo "跳过/已存在: $SKIP_COUNT 个文件"
 echo "失败: $ERROR_COUNT 个文件"
 echo "结束时间: $(date)"
+DOCQA_ARCHIVED_MINIO_SCRIPT

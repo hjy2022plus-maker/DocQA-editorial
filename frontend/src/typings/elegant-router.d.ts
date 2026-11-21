@@ -25,7 +25,7 @@ declare module "@elegant-router/types" {
     "iframe-page": "/iframe-page/:url";
     "invite-code": "/invite-code";
     "knowledge-base": "/knowledge-base";
-    "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
+    "login": "/login/:module(pwd-login|register)?";
     "model-provider": "/model-provider";
     "org-tag": "/org-tag";
     "personal-center": "/personal-center";

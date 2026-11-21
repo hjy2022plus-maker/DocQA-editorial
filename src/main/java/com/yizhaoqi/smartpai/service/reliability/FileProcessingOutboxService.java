@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * 改文件状态和写待投递消息放在同一个数据库事务里，事务提交后异步投递 Kafka；
  * 投递失败或进程在提交后崩溃，消息仍在表里，定时任务按指数退避补发。投递是至少一次，消费端靠认领和完成状态去重
  */
-@Service
+// @Service // Kafka Outbox 属于企业可靠性链路，轻量模式停用
 public class FileProcessingOutboxService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileProcessingOutboxService.class);

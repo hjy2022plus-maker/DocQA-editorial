@@ -578,7 +578,7 @@ async function loadDocument(url: string) {
   await cleanupPdfState();
 
   try {
-    const shouldAttachAuthHeaders = !/^https?:\/\//i.test(url) || url.includes('/api/v1/documents/page-preview');
+    const shouldAttachAuthHeaders = new URL(url, window.location.href).origin === window.location.origin;
     const authorization = getAuthorization();
     loadingTask = getDocument({
       url,

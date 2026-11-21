@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * 组织标签缓存服务
  * 用于缓存用户组织标签信息，提高权限验证效率
  */
-@Service
+// @Service // 轻量模式不使用组织标签缓存
 public class OrgTagCacheService {
     
     private static final Logger logger = LoggerFactory.getLogger(OrgTagCacheService.class);

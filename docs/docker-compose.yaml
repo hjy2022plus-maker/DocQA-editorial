@@ -1,3 +1,4 @@
+# 旧企业版 Compose，仅供历史查阅。当前运行请使用仓库根目录 docker-compose.yml。
 name: pai_smart
 
 services:

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * 组织标签初始化器
  * 在应用启动时自动创建默认组织标签（如果不存在）
  */
-@Component
+// @Component // 轻量模式不初始化组织标签体系
 @Order(2) // 设置优先级，确保在管理员账号初始化器之后运行
 public class OrgTagInitializer implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(OrgTagInitializer.class);

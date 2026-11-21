@@ -3,7 +3,8 @@ import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAppStore } from '@/store/modules/app';
 import ChatList from './modules/chat-list.vue';
-import InputBox from './modules/input-box.vue';
+// import InputBox from './modules/input-box.vue'; // 历史 WebSocket 组件
+import InputBox from './modules/lightweight-input.vue';
 import ConversationSidebar from './modules/conversation-sidebar.vue';
 import ReferencePreviewPage from './modules/reference-preview-page.vue';
 

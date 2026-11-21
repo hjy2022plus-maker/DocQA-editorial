@@ -57,10 +57,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'chat-history',
       i18nKey: 'route.chat-history',
-      roles: ['ADMIN'],
       icon: 'solar:hashtag-chat-broken',
-      order: 2,
-      hideInMenu: true
+      order: 3
     }
   },
   {
@@ -76,6 +74,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       keepAlive: true
     }
   },
+  /* 已按毕设范围停用商业化邀请码管理路由。
   {
     name: 'invite-code',
     path: '/invite-code',
@@ -88,7 +87,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       order: 6,
       hideInMenu: false
     }
-  },
+  }, */
   {
     name: 'knowledge-base',
     path: '/knowledge-base',
@@ -102,7 +101,7 @@ export const generatedRoutes: GeneratedRoute[] = [
   },
   {
     name: 'login',
-    path: '/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?',
+    path: '/login/:module(pwd-login|register)?',
     component: 'layout.blank$view.login',
     props: true,
     meta: {
@@ -112,6 +111,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       hideInMenu: true
     }
   },
+  /* 轻量模式固定单一模型和公开/私有权限，停用供应商与组织标签管理。
   {
     name: 'model-provider',
     path: '/model-provider',
@@ -137,7 +137,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       order: 4,
       hideInMenu: false
     }
-  },
+  }, */
+  /* 旧个人中心含余额及充值入口。
   {
     name: 'personal-center',
     path: '/personal-center',
@@ -149,7 +150,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       order: 7,
       hideInMenu: true
     }
-  },
+  }, */
+  /* 充值、计费和用量运营页与论文无关，保留源文件但注释停用。
   {
     name: 'recharge',
     path: '/recharge',
@@ -187,7 +189,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       order: 6,
       hideInMenu: true
     }
-  },
+  }, */
   {
     name: 'user',
     path: '/user',
@@ -197,7 +199,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       i18nKey: 'route.user',
       icon: 'solar:users-group-two-rounded-line-duotone',
       roles: ['ADMIN'],
-      hideInMenu: true
+      order: 4
     }
   }
 ];

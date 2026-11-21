@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* 旧版重连测试停用；SSE 不支持重连和快照。
 
 const DEFAULTS = {
   apiBase: 'http://127.0.0.1:8081/api/v1',
@@ -357,3 +358,4 @@ main().catch(error => {
   console.error(`[chat-reconnect] failed ${error?.stack ?? error}`);
   process.exitCode = 1;
 });
+*/

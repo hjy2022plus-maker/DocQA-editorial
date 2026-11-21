@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# 旧版基础设施脚本仅存档；当前使用根目录的 Compose。
+: <<'DOCQA_ARCHIVED_INFRA_SCRIPT'
 
 set -u
 
@@ -682,3 +684,4 @@ main() {
 }
 
 main "$@"
+DOCQA_ARCHIVED_INFRA_SCRIPT

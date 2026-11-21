@@ -1,3 +1,4 @@
+<!-- 历史面试材料；不属于当前运行指南。
 ## 1. WebSocket 流式对话与主动中断
 
 ### 简历描述
@@ -3014,3 +3015,4 @@ public Permit acquire(String taskName) {
 - 拿解析许可超时抛 `ParseCapacityExceededException` 会走 Kafka 重试，重试 4 次还拿不到就进了死信，这种“只是忙、不是错”的失败应不应该进死信？
 
 ---
+-->

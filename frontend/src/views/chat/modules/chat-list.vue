@@ -8,7 +8,7 @@ defineOptions({
 });
 
 const chatStore = useChatStore();
-const { list, sessionId, conversationId } = storeToRefs(chatStore);
+const { list, conversationId } = storeToRefs(chatStore);
 
 const loading = ref(false);
 const scrollbarRef = ref<InstanceType<typeof NScrollbar>>();
@@ -111,7 +111,7 @@ const showEmpty = computed(() => !loading.value && list.value.length === 0);
                 v-for="(item, index) in list"
                 :key="index"
                 :msg="item"
-                :session-id="sessionId"
+                :session-id="conversationId"
                 :retrieval-query-fallback="getRetrievalQueryFallback(index)"
               />
             </VueMarkdownItProvider>

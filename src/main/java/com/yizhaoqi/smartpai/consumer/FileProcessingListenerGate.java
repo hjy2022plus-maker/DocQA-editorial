@@ -16,7 +16,7 @@ import java.util.Set;
  * 多个来源（堆内存背压、embedding 索引切换）可以各自申请暂停，只有所有原因都解除后才恢复消费。
  * 暂停只是不再 poll 新消息，压力留在 Kafka 里，不往 JVM 里堆；正在处理的任务会正常跑完。
  */
-@Component
+// @Component // Kafka 消费闸门已停用
 public class FileProcessingListenerGate {
 
     public static final String LISTENER_ID = "fileProcessingListener";

@@ -188,7 +188,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     const { error } = await fetchLogout();
     if (!error) {
       resetStore();
-      useKnowledgeBaseStore().$reset();
+      // 轻量知识库页面只维护页面内状态，不使用旧分片上传队列。
+      // useKnowledgeBaseStore().$reset();
     }
   }
 

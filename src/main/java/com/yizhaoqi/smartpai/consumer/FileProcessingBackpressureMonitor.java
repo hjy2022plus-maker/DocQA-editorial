@@ -20,7 +20,7 @@ import java.util.function.LongSupplier;
  * 堆内存背压：堆使用率超过阈值时暂停 Kafka 文件处理消费，降到恢复阈值以下再恢复。
  * 用两个阈值做迟滞，避免在阈值附近反复暂停 / 恢复。不再主动调用 System.gc()。
  */
-@Component
+// @Component // 轻量模式不做 Kafka 背压监控
 public class FileProcessingBackpressureMonitor {
 
     private static final Logger logger = LoggerFactory.getLogger(FileProcessingBackpressureMonitor.class);

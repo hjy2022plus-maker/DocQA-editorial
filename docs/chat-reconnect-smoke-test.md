@@ -1,3 +1,4 @@
+<!-- 历史 WebSocket 重连测试，当前 SSE 不提供重连快照。
 # Chat Reconnect Smoke Test
 
 This repo now includes a reproducible reconnect test script:
@@ -74,3 +75,4 @@ If the script succeeds, the summary should show:
 - `activeContentLength > ws1ContentLength`
 - `ws2Chunks > 0`
 - `finalStatus = COMPLETED`
+-->

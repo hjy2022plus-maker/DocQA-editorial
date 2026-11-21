@@ -1,0 +1,55 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/PaiSmart?serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+  servlet:
+    multipart:
+      max-file-size: ${APP_UPLOAD_LIMIT:20MB}
+      max-request-size: ${APP_REQUEST_LIMIT:21MB}
+
+app:
+  storage:
+    root: ${APP_STORAGE_ROOT:./data/documents}
+    max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:20971520}
+  jwt-secret: ${JWT_SECRET_KEY:}
+  registration-open: ${APP_REGISTRATION_OPEN:true}
+  admin:
+    enabled: ${ADMIN_BOOTSTRAP_ENABLED:false}
+    username: ${ADMIN_BOOTSTRAP_USERNAME:}
+    password: ${ADMIN_BOOTSTRAP_PASSWORD:}
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST:localhost}
+  port: ${ELASTICSEARCH_PORT:9200}
+  scheme: ${ELASTICSEARCH_SCHEME:http}
+  username: ${ELASTICSEARCH_USERNAME:elastic}
+  password: ${ELASTICSEARCH_PASSWORD:}
+  insecure-trust-all-certificates: ${ELASTICSEARCH_INSECURE_TRUST_ALL_CERTIFICATES:false}
+
+rag:
+  index: ${RAG_INDEX:docqa_chunks_v1}
+  embedding:
+    url: ${EMBEDDING_API_URL:}
+    key: ${EMBEDDING_API_KEY:}
+    model: ${EMBEDDING_API_MODEL:text-embedding-v4}
+    dimension: ${EMBEDDING_DIMENSION:2048}
+    send-dimension: ${EMBEDDING_SEND_DIMENSION:true}
+  llm:
+    url: ${DEEPSEEK_API_URL:}
+    key: ${DEEPSEEK_API_KEY:}
+    model: ${DEEPSEEK_API_MODEL:deepseek-chat}
+  rerank:
+    enabled: ${SEARCH_RERANK_ENABLED:true}
+    url: ${SEARCH_RERANK_URL:}
+    key: ${SEARCH_RERANK_API_KEY:${EMBEDDING_API_KEY:}}
+    model: ${SEARCH_RERANK_MODEL:gte-rerank-v2}
+    threshold: ${SEARCH_RERANK_SCORE_THRESHOLD:0.1}
+  parent-context-enabled: ${SEARCH_PARENT_CONTEXT_ENABLED:true}
+  rrf-threshold: ${SEARCH_HYBRID_RRF_SCORE_THRESHOLD:0.028}

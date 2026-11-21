@@ -22,7 +22,7 @@ import java.util.List;
  * 每类记录都是先查出来，再用"扫描时看到的心跳"做条件更新：扫描之后任务有了进展、或者另一个实例已经处理过，
  * 条件就不成立，影响行数为 0 直接跳过。多实例同时跑也不会重复投递或误删
  */
-@Component
+// @Component // 多实例文件恢复任务停用
 public class FileProcessingRecoveryJob {
 
     private static final Logger logger = LoggerFactory.getLogger(FileProcessingRecoveryJob.class);

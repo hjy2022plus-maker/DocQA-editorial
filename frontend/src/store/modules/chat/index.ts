@@ -1,11 +1,13 @@
-import { useWebSocket } from '@vueuse/core';
+// import { useWebSocket } from '@vueuse/core';
 import { request } from '@/service/request';
 
 export const useChatStore = defineStore(SetupStoreId.Chat, () => {
+  /* 旧版 WebSocket 连接状态和重连常量。
   const lightweightMode = import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true';
   const NON_RETRYABLE_CLOSE_CODES = new Set([1002, 1003, 1007, 1008]);
   const WS_HEARTBEAT_PING = '__chat_ping__';
   const WS_HEARTBEAT_PONG = '__chat_pong__';
+  */
 
   const conversationId = ref<string>('');
   const input = ref<Api.Chat.Input>({ message: '' });
@@ -14,8 +16,8 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
   const sessionsLoading = ref(false);
   const activeTab = ref<'active' | 'archived'>('active');
 
+  /* 旧版生成快照、限流和重连状态。
   const store = useAuthStore();
-
   const sessionId = ref<string>('');
   const allowReconnect = ref(true);
   const authFailureNotified = ref(false);
@@ -151,6 +153,7 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
     upsertGenerationSnapshot(snapshot);
     if (snapshot.status === 'STREAMING') resumeGeneration(snapshot.generationId);
   }
+  */
 
   // ---- Session management ----
 
@@ -251,7 +254,7 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
     return sessions.value.filter(s => s.status === (activeTab.value === 'archived' ? 'ARCHIVED' : 'ACTIVE'));
   });
 
-  // ---- WebSocket ----
+  /* ---- WebSocket / reconnect (disabled) ----
 
   const socketUrl = computed(() => {
     if (lightweightMode) {
@@ -424,6 +427,15 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
     }
     return wsStatus.value;
   });
+  */
+
+  const scrollToBottom = ref<null | (() => void)>(null);
+  function handleAuthReset() {
+    conversationId.value = '';
+    input.value = { message: '' };
+    list.value = [];
+    sessions.value = [];
+  }
 
   return {
     input,
@@ -433,24 +445,15 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
     sessionsLoading,
     activeTab,
     filteredSessions,
-    connectionStatus,
-    isRateLimited,
-    rateLimitRemainingSeconds,
-    wsStatus,
-    wsData,
-    wsSend: rawWsSend,
-    wsOpen,
-    wsClose,
-    sessionId,
+    /* connectionStatus, isRateLimited, rateLimitRemainingSeconds, wsStatus, wsData,
+    wsSend: rawWsSend, wsOpen, wsClose, sessionId, */
     scrollToBottom,
-    clearRateLimitCountdown,
-    startRateLimitCountdown,
     handleAuthReset,
-    fetchGenerationSnapshot,
+    /* fetchGenerationSnapshot,
     fetchActiveGenerationSnapshot,
     resumeGeneration,
     upsertGenerationSnapshot,
-    syncGenerationAfterReconnect,
+    syncGenerationAfterReconnect, */
     loadSessions,
     createNewSession,
     switchSession,

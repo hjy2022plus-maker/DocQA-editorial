@@ -13,7 +13,7 @@ import com.yizhaoqi.smartpai.service.ChatSessionRegistry;
 import com.yizhaoqi.smartpai.utils.JwtUtils;
 import java.util.Map;
 
-@Component
+// @Component // 轻量模式不注册 WebSocket handler
 public class ChatWebSocketHandler extends TextWebSocketHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketHandler.class);
