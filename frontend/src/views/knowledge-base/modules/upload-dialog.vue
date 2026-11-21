@@ -6,6 +6,7 @@ defineOptions({
 });
 
 const loading = ref(false);
+const lightweightMode = import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true';
 const visible = defineModel<boolean>('visible', { default: false });
 const orgOptions = ref<Api.OrgTag.Details[]>([]);
 const orgLoading = ref(false);
@@ -21,7 +22,7 @@ const model = ref<Api.KnowledgeBase.Form>(createDefaultModel());
 
 function createDefaultModel(): Api.KnowledgeBase.Form {
   return {
-    orgTag: null,
+    orgTag: lightweightMode ? 'default' : null,
     orgTagName: '',
     uploadMaxSizeBytes: null,
     uploadMaxSizeMb: null,
@@ -46,7 +47,10 @@ const fileSizeLimitError = computed(() => {
 });
 
 const submitDisabled = computed(
-  () => loading.value || orgLoading.value || !model.value.orgTag || Boolean(fileSizeLimitError.value)
+  () =>
+    loading.value ||
+    (!lightweightMode && (orgLoading.value || !model.value.orgTag)) ||
+    Boolean(fileSizeLimitError.value)
 );
 
 function close() {
@@ -65,6 +69,7 @@ async function handleSubmit() {
 }
 
 async function loadUploadOrganizations() {
+  if (lightweightMode) return;
   orgRequestId += 1;
   const requestId = orgRequestId;
   orgOptions.value = [];
@@ -120,7 +125,7 @@ function onUpdate(option: unknown) {
     @positive-click="handleSubmit"
   >
     <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="100" mt-10>
-      <NFormItem label="所属空间" path="orgTag">
+      <NFormItem v-if="!lightweightMode" label="所属空间" path="orgTag">
         <div class="w-full">
           <NSelect
             v-model:value="model.orgTag"
@@ -162,7 +167,7 @@ function onUpdate(option: unknown) {
         <div v-if="fileSizeLimitError" class="mt-8px text-12px text-#ef4444">
           {{ fileSizeLimitError }}
         </div>
-        <div v-else-if="!authStore.isAdmin && model.uploadMaxSizeMb" class="mt-8px text-12px text-#d97706">
+        <div v-else-if="!lightweightMode && !authStore.isAdmin && model.uploadMaxSizeMb" class="mt-8px text-12px text-#d97706">
           当前组织限制非管理员上传文件不超过 {{ model.uploadMaxSizeMb }} MB
         </div>
       </NFormItem>

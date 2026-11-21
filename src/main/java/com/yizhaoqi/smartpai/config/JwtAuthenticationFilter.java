@@ -76,6 +76,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    // 轻量模式只需要“公开文档 / 当前用户私有文档”两级权限。
+                    // 将 JWT 中的基础身份放到请求属性，避免依赖组织标签授权过滤器。
+                    request.setAttribute("userId", jwtUtils.extractUserIdFromToken(token));
+                    request.setAttribute("role", jwtUtils.extractRoleFromToken(token));
                 }
             }
             filterChain.doFilter(request, response); // 继续执行过滤链

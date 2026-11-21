@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.yizhaoqi.smartpai.model.User;
 import com.yizhaoqi.smartpai.repository.UserRepository;
-import com.yizhaoqi.smartpai.service.TokenCacheService;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
@@ -18,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JwtUtils {
@@ -34,8 +34,12 @@ public class JwtUtils {
     @Autowired
     private UserRepository userRepository;
     
-    @Autowired
-    private TokenCacheService tokenCacheService;
+    /**
+     * 轻量模式不依赖 Redis 保存短期令牌状态。令牌本身仍由 JWT 签名保护，
+     * 这里的内存表只负责在当前单机进程内支持主动失效和刷新。
+     */
+    private final Map<String, TokenState> accessTokens = new ConcurrentHashMap<>();
+    private final Map<String, TokenState> refreshTokens = new ConcurrentHashMap<>();
 
     /**
      * 解析 Base64 密钥，并返回 SecretKey
@@ -46,7 +50,7 @@ public class JwtUtils {
     }
 
     /**
-     * 生成 JWT Token（集成Redis缓存）
+     * 生成 JWT Token
      */
     public String generateToken(String username) {
         SecretKey key = getSigningKey(); // 解析密钥
@@ -82,15 +86,14 @@ public class JwtUtils {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         
-        // 缓存token信息到Redis
-        tokenCacheService.cacheToken(tokenId, user.getId().toString(), username, expireTime);
+        accessTokens.put(tokenId, new TokenState(user.getId().toString(), expireTime));
         
         logger.info("Token generated and cached for user: {}, tokenId: {}", username, tokenId);
         return token;
     }
 
     /**
-     * 验证 JWT Token 是否有效（优先使用Redis缓存）
+     * 验证 JWT Token 是否有效
      */
     public boolean validateToken(String token) {
         try {
@@ -101,17 +104,15 @@ public class JwtUtils {
                 return false;
             }
             
-            // 检查Redis缓存中的token状态
-            if (!tokenCacheService.isTokenValid(tokenId)) {
-                logger.debug("Token invalid in cache: {}", tokenId);
-                return false;
-            }
-            
-            // Redis验证通过，再验证JWT签名（双重验证）
-            Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token)
+                    .getBody();
+            if (!isActive(accessTokens, tokenId, claims.get("userId", String.class))) {
+                logger.debug("Token is not active in this process: {}", tokenId);
+                return false;
+            }
 
             logger.debug("Token validation successful: {}", tokenId);
             return true;
@@ -310,15 +311,14 @@ public class JwtUtils {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
         
-        // 缓存refresh token信息到Redis
-        tokenCacheService.cacheRefreshToken(refreshTokenId, user.getId().toString(), null, expireTime);
+        refreshTokens.put(refreshTokenId, new TokenState(user.getId().toString(), expireTime));
         
         logger.info("Refresh token generated and cached for user: {}, refreshTokenId: {}", username, refreshTokenId);
         return refreshToken;
     }
     
     /**
-     * 验证 Refresh Token 是否有效（优先使用Redis缓存）
+     * 验证 Refresh Token 是否有效
      */
     public boolean validateRefreshToken(String refreshToken) {
         try {
@@ -329,18 +329,15 @@ public class JwtUtils {
                 return false;
             }
             
-            // 检查Redis缓存中的refresh token状态
-            if (!tokenCacheService.isRefreshTokenValid(refreshTokenId)) {
-                logger.debug("Refresh token invalid in cache: {}", refreshTokenId);
-                return false;
-            }
-            
-            // Redis验证通过，再验证JWT签名
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(refreshToken)
                     .getBody();
+            if (!isActive(refreshTokens, refreshTokenId, claims.get("userId", String.class))) {
+                logger.debug("Refresh token is not active in this process: {}", refreshTokenId);
+                return false;
+            }
             
             // 验证是否为refresh token类型
             String tokenType = claims.get("type", String.class);
@@ -395,7 +392,7 @@ public class JwtUtils {
     }
     
     /**
-     * 使token失效（加入Redis黑名单）
+     * 使 token 失效
      */
     public void invalidateToken(String token) {
         try {
@@ -406,10 +403,7 @@ public class JwtUtils {
                     long expireTime = claims.getExpiration().getTime();
                     String userId = claims.get("userId", String.class);
                     
-                    // 加入黑名单
-                    tokenCacheService.blacklistToken(tokenId, expireTime);
-                    // 从缓存中移除
-                    tokenCacheService.removeToken(tokenId, userId);
+                    accessTokens.remove(tokenId);
                     
                     logger.info("Token invalidated: {}", tokenId);
                 }
@@ -420,14 +414,24 @@ public class JwtUtils {
     }
     
     /**
-     * 使用户所有token失效（批量登出）
+     * 使用户所有 token 失效（批量登出）
      */
     public void invalidateAllUserTokens(String userId) {
         try {
-            tokenCacheService.removeAllUserTokens(userId);
+            accessTokens.entrySet().removeIf(entry -> userId.equals(entry.getValue().userId()));
+            refreshTokens.entrySet().removeIf(entry -> userId.equals(entry.getValue().userId()));
             logger.info("All tokens invalidated for user: {}", userId);
         } catch (Exception e) {
             logger.error("Error invalidating all user tokens: {}", userId, e);
         }
     }
+
+    private boolean isActive(Map<String, TokenState> tokens, String tokenId, String userId) {
+        TokenState state = tokens.get(tokenId);
+        return state != null
+                && state.expiresAt() > System.currentTimeMillis()
+                && (userId == null || userId.equals(state.userId()));
+    }
+
+    private record TokenState(String userId, long expiresAt) {}
 }

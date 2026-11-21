@@ -19,7 +19,7 @@ const previewFileMd5 = ref('');
 
 async function apiFn(params: Api.Common.CommonSearchParams = {}): Promise<FlatResponseData<Api.KnowledgeBase.List>> {
   const response = await request<Api.KnowledgeBase.UploadTask[] | Api.KnowledgeBase.List>({
-    url: '/documents/accessible',
+    url: import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true' ? '/lightweight/documents' : '/documents/accessible',
     params
   });
   if (response.error) return response as FlatResponseData<Api.KnowledgeBase.List>;
@@ -27,10 +27,26 @@ async function apiFn(params: Api.Common.CommonSearchParams = {}): Promise<FlatRe
   const payload = response.data;
   if (!Array.isArray(payload)) return response as FlatResponseData<Api.KnowledgeBase.List>;
 
+  const normalizedPayload =
+    import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true'
+      ? payload.map((item: any) => ({
+          ...item,
+          id: item.id || item.md5,
+          fileMd5: item.fileMd5 || item.md5,
+          totalSize: item.totalSize || item.size || 0,
+          status: item.status === 'READY' ? UploadStatus.Completed : UploadStatus.Uploading,
+          progress: item.status === 'READY' ? 100 : 20,
+          public: item.public ?? item.isPublic,
+          isPublic: item.isPublic,
+          userId: item.ownerId,
+          vectorizationStatus: item.status === 'READY' ? 'COMPLETED' : 'PROCESSING'
+        }))
+      : payload;
+
   const page = params.page && params.page > 0 ? params.page : 1;
   const size = params.size && params.size > 0 ? params.size : 10;
   const start = (page - 1) * size;
-  const pageData = payload.slice(start, start + size);
+  const pageData = normalizedPayload.slice(start, start + size);
 
   return {
     ...response,
@@ -39,7 +55,7 @@ async function apiFn(params: Api.Common.CommonSearchParams = {}): Promise<FlatRe
       content: pageData,
       number: page,
       size,
-      totalElements: payload.length
+      totalElements: normalizedPayload.length
     }
   };
 }

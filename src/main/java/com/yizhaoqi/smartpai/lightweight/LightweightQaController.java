@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/lightweight/qa")
@@ -25,10 +26,16 @@ public class LightweightQaController {
             if (hits.isEmpty()) {
                 emitter.send(SseEmitter.event().name("refusal").data("当前知识库没有足够证据，暂不回答。"));
             } else {
-                emitter.send(SseEmitter.event().name("answer").data(hits.get(0).chunk()));
+                String answer = hits.get(0).chunk();
+                // 用 SSE 分段发送，保留轻量单机模式下的打字机体验；不做断线重连和快照。
+                for (int start = 0; start < answer.length(); start += 80) {
+                    emitter.send(SseEmitter.event().name("answer")
+                            .data(answer.substring(start, Math.min(answer.length(), start + 80))));
+                }
                 for (int i = 0; i < hits.size(); i++) {
                     LightweightDocumentService.SearchHit hit = hits.get(i);
-                    emitter.send(SseEmitter.event().name("citation").data(new Citation(i + 1, hit.document().id(), hit.document().fileName(), hit.chunk())));
+                    emitter.send(SseEmitter.event().name("citation").data(
+                            new Citation(i + 1, hit.document().id(), hit.document().fileName(), hit.chunk())));
                 }
             }
             emitter.send(SseEmitter.event().name("done").data("true"));

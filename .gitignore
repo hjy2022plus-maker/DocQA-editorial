@@ -81,3 +81,6 @@ src/main/resources/cert
 # Local release configuration and Python caches
 /scripts/.deploy/
 __pycache__/
+
+# README 不纳入版本管理
+README.md

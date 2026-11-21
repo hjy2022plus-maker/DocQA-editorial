@@ -25,9 +25,6 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     
-    @Autowired
-    private OrgTagAuthorizationFilter orgTagAuthorizationFilter;
-
     /**
      * 配置SecurityFilterChain bean的方法
      * 该方法主要用于配置应用的安全规则，包括哪些请求需要授权、CSRF保护的启用或禁用、会话管理策略等
@@ -45,32 +42,12 @@ public class SecurityConfig {
                     .authorizeHttpRequests(authorize -> authorize
                             // 允许静态资源访问
                             .requestMatchers("/", "/test.html", "/static/test.html", "/static/**", "/*.js", "/*.css", "/*.ico").permitAll()
-                            // 允许 WebSocket 连接
-                            .requestMatchers("/chat/**", "/ws/**").permitAll()
                             // 允许登录注册接口
-                            .requestMatchers("/api/v1/users/register", "/api/v1/users/login").permitAll()
-                            // 允许测试接口
-                            .requestMatchers("/api/v1/test/**").permitAll()
-                            // LiteParse OCR 回调接口：可通过 aliyun.ocr.callback-token 进行轻量校验
-                            .requestMatchers("/api/v1/internal/ocr/**").permitAll()
-                            // 文件上传和下载相关接口 - 普通用户和管理员都可访问
-                            .requestMatchers(
-                                    "/api/v1/upload/**",
-                                    "/api/v1/parse",
-                                    "/api/v1/documents/download",
-                                    "/api/v1/documents/preview",
-                                    "/api/v1/documents/page-preview"
-                            ).hasAnyRole("USER", "ADMIN")
-                            // 对话历史相关接口 - 用户只能查看自己的历史，管理员可以查看所有
-                            .requestMatchers("/api/v1/users/conversation/**").hasAnyRole("USER", "ADMIN")
-                            // 搜索接口 - 普通用户和管理员都可访问
-                            .requestMatchers("/api/search/**").hasAnyRole("USER", "ADMIN")
-                            // 聊天相关接口 - WebSocket停止Token获取
-                            .requestMatchers("/api/v1/chat/**").hasAnyRole("USER", "ADMIN")
-                            // 管理员专属接口 - 知识库管理、系统状态、用户活动监控
+                            .requestMatchers("/api/v1/users/register", "/api/v1/users/login", "/api/v1/auth/refreshToken").permitAll()
+                            // 轻量知识库：基础 JWT 登录 + 公开/私有文档权限
+                            .requestMatchers("/api/v1/lightweight/**").hasAnyRole("USER", "ADMIN")
+                            // 管理员接口仍保留最小角色保护
                             .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                            // 用户组织标签管理接口
-                            .requestMatchers("/api/v1/users/primary-org").hasAnyRole("USER", "ADMIN")
                             // 其他请求需要认证
                             .anyRequest().authenticated())
                     // 配置会话管理策略
@@ -78,9 +55,7 @@ public class SecurityConfig {
                     .sessionManagement(session -> session
                             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     // 添加JWT认证过滤器
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                    // 添加组织标签授权过滤器
-                    .addFilterAfter(orgTagAuthorizationFilter, JwtAuthenticationFilter.class);
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
             // 记录安全配置加载成功的信息
             logger.info("Security configuration loaded successfully.");

@@ -2,6 +2,7 @@ import { useWebSocket } from '@vueuse/core';
 import { request } from '@/service/request';
 
 export const useChatStore = defineStore(SetupStoreId.Chat, () => {
+  const lightweightMode = import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true';
   const NON_RETRYABLE_CLOSE_CODES = new Set([1002, 1003, 1007, 1008]);
   const WS_HEARTBEAT_PING = '__chat_ping__';
   const WS_HEARTBEAT_PONG = '__chat_pong__';
@@ -253,6 +254,9 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
   // ---- WebSocket ----
 
   const socketUrl = computed(() => {
+    if (lightweightMode) {
+      return undefined;
+    }
     const token = store.token?.trim();
     if (!token) {
       return undefined;
@@ -409,6 +413,9 @@ export const useChatStore = defineStore(SetupStoreId.Chat, () => {
   const scrollToBottom = ref<null | (() => void)>(null);
   const isRateLimited = computed(() => rateLimitRemainingSeconds.value > 0);
   const connectionStatus = computed(() => {
+    if (lightweightMode) {
+      return 'OPEN';
+    }
     if (wsStatus.value === 'OPEN') {
       return 'OPEN';
     }

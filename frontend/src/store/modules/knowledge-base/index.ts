@@ -2,6 +2,7 @@ import { REQUEST_ID_KEY } from '~/packages/axios/src';
 import { nanoid } from '~/packages/utils/src';
 
 const maxConcurrentChunksPerFile = 4;
+const lightweightMode = import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true';
 
 export const useKnowledgeBaseStore = defineStore(SetupStoreId.KnowledgeBase, () => {
   const tasks = ref<Api.KnowledgeBase.UploadTask[]>([]);
@@ -112,6 +113,28 @@ export const useKnowledgeBaseStore = defineStore(SetupStoreId.KnowledgeBase, () 
     }
   }
 
+  async function uploadNormal(task: Api.KnowledgeBase.UploadTask) {
+    const formData = new FormData();
+    formData.append('file', task.file);
+    formData.append('public', String(task.isPublic ?? false));
+    const { error } = await request({
+      url: '/lightweight/documents',
+      method: 'POST',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 10 * 60 * 1000
+    });
+    if (error) throw new Error('文件上传失败');
+
+    const target = tasks.value.find(item => item.fileMd5 === task.fileMd5);
+    if (target) {
+      target.status = UploadStatus.Completed;
+      target.progress = 100;
+      target.uploadedChunks = [];
+      target.vectorizationStatus = 'PROCESSING';
+    }
+  }
+
   /**
    * 异步函数：将上传请求加入队列
    *
@@ -191,6 +214,11 @@ export const useKnowledgeBaseStore = defineStore(SetupStoreId.KnowledgeBase, () 
     const totalChunks = Math.ceil(task.totalSize / chunkSize);
 
     try {
+      if (lightweightMode) {
+        await uploadNormal(task);
+        return;
+      }
+
       if (task.uploadedChunks.length === totalChunks) {
         const success = await mergeFile(task);
         if (!success) throw new Error('文件合并失败');

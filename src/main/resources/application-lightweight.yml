@@ -2,18 +2,37 @@ spring:
   config:
     activate:
       on-profile: lightweight
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
   data:
     redis:
       repositories:
         enabled: false
   kafka:
     enabled: false
+    listener:
+      auto-startup: false
+  task:
+    scheduling:
+      enabled: false
+  webflux:
+    client:
+      max-in-memory-size: 16MB
+  codec:
+    max-in-memory-size: 16MB
 
 app:
   storage:
     root: ${APP_STORAGE_ROOT:./data/documents}
     max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:20971520}
     allowed-extensions: pdf,doc,docx,md,txt
+  auth:
+    registration:
+      mode: ${APP_AUTH_REGISTRATION_MODE:OPEN}
+      invite-required: ${APP_AUTH_INVITE_REQUIRED:false}
 
 lightweight:
   upload:
@@ -23,3 +42,30 @@ lightweight:
     transport: sse
     reconnect: false
     snapshot: false
+
+# 轻量模式只需要 MySQL、Elasticsearch 和本地磁盘；以下开关避免启动遗留企业链路。
+knowledge:
+  bootstrap:
+    enabled: false
+  contextual-retrieval:
+    enabled: false
+  conflict:
+    enabled: false
+
+file:
+  parsing:
+    chunk-size: 800
+    overlap-size: 120
+    min-chunk-size: 100
+    pdf:
+      engine: tika
+    liteparse:
+      ocr-enabled: false
+
+elasticsearch:
+  scheme: ${ELASTICSEARCH_SCHEME:http}
+  init:
+    enabled: true
+
+security:
+  allowed-origins: ${SECURITY_ALLOWED_ORIGINS:http://localhost:*,http://127.0.0.1:*}

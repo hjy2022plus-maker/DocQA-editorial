@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { getAuthorization } from '@/service/request/shared';
+import { getServiceBaseURL } from '@/utils/service';
+
 const chatStore = useChatStore();
 const { connectionStatus, input, isRateLimited, list, rateLimitRemainingSeconds, wsData } = storeToRefs(chatStore);
+const lightweightMode = import.meta.env.VITE_LIGHTWEIGHT_MODE === 'true';
 
 function buildWsErrorMessage(data: Record<string, any>) {
   if (data.code === 429) {
@@ -48,7 +52,7 @@ const sendDisabled = computed(() => {
   if (isRateLimited.value) {
     return true;
   }
-  return !input.value.message || ['CLOSED', 'CONNECTING'].includes(connectionStatus.value);
+  return !input.value.message || (!lightweightMode && ['CLOSED', 'CONNECTING'].includes(connectionStatus.value));
 });
 
 const connectionText = computed(() => {
@@ -259,6 +263,62 @@ function updateExecutingToolStatus(assistant: Api.Chat.Message, status: Api.Chat
   }
 }
 
+async function streamLightweightQuestion(question: string, assistant: Api.Chat.Message) {
+  const { baseURL } = getServiceBaseURL(import.meta.env, import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y');
+  const url = `${baseURL}/lightweight/qa/stream?question=${encodeURIComponent(question)}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'text/event-stream',
+        Authorization: getAuthorization() || ''
+      }
+    });
+    if (!response.ok || !response.body) throw new Error(`SSE request failed: ${response.status}`);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    const consumeEvent = (rawEvent: string) => {
+      let eventName = 'message';
+      let data = '';
+      rawEvent.split(/\r?\n/).forEach(line => {
+        if (line.startsWith('event:')) eventName = line.slice(6).trim();
+        if (line.startsWith('data:')) data += line.slice(5).trimStart();
+      });
+      if (!data) return;
+      if (eventName === 'answer' || eventName === 'refusal') {
+        assistant.content += data;
+        assistant.status = 'loading';
+      } else if (eventName === 'citation') {
+        try {
+          const citation = JSON.parse(data);
+          assistant.referenceMappings ||= {};
+          assistant.referenceMappings[String(citation.number)] = citation;
+        } catch {
+          // 忽略无法解析的引用事件，正文仍可正常展示
+        }
+      } else if (eventName === 'done') {
+        assistant.status = 'finished';
+      }
+    };
+
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const events = buffer.split(/\r?\n\r?\n/);
+      buffer = events.pop() || '';
+      events.forEach(consumeEvent);
+      if (done) break;
+    }
+    if (buffer.trim()) consumeEvent(buffer);
+    assistant.status = assistant.status === 'error' ? 'error' : 'finished';
+  } catch (error) {
+    assistant.status = 'error';
+    assistant.content = error instanceof Error ? error.message : '暂时无法连接问答服务';
+  }
+}
+
 function handleToolCallPayload(assistant: Api.Chat.Message, payload: Record<string, any>) {
   const id = typeof payload.toolCallId === 'string' ? payload.toolCallId : '';
   const tool = typeof payload.tool === 'string' ? payload.tool : '';
@@ -349,6 +409,7 @@ const handleSend = async () => {
   }
 
   if (isSending.value) {
+    if (lightweightMode) return;
     const { error, data: tokenData } = await request<Api.Chat.Token>({
       url: 'chat/websocket-token'
     });
@@ -364,6 +425,17 @@ const handleSend = async () => {
 
     list.value[list.value.length - 1].status = 'finished';
     if (!latestMessage.value.content) list.value.pop();
+    return;
+  }
+
+  if (lightweightMode) {
+    const question = input.value.message.trim();
+    if (!question) return;
+    list.value.push({ content: question, role: 'user' });
+    const assistant: Api.Chat.Message = { content: '', role: 'assistant', status: 'pending', toolEvents: [] };
+    list.value.push(assistant);
+    input.value.message = '';
+    await streamLightweightQuestion(question, assistant);
     return;
   }
 

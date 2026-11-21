@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/lightweight/documents")
@@ -20,14 +21,20 @@ public class LightweightDocumentController {
     public LightweightDocumentController(LightweightDocumentService documentService) { this.documentService = documentService; }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<LightweightDocument> upload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<Map<String, Object>> upload(@RequestParam("file") MultipartFile file,
             @RequestParam(value = "public", defaultValue = "false") boolean isPublic,
             @RequestAttribute(value = "userId", required = false) String userId) throws Exception {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(documentService.accept(file, userId, isPublic));
+        LightweightDocument document = documentService.accept(file, userId, isPublic);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of(
+                "code", 200,
+                "message", "文档已接收，正在异步解析",
+                "data", document
+        ));
     }
 
     @GetMapping
-    public List<LightweightDocument> list(@RequestAttribute(value = "userId", required = false) String userId) {
-        return documentService.list(userId);
+    public Map<String, Object> list(@RequestAttribute(value = "userId", required = false) String userId) {
+        List<LightweightDocument> documents = documentService.list(userId);
+        return Map.of("code", 200, "message", "ok", "data", documents);
     }
 }
